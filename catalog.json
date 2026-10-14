@@ -1,0 +1,26 @@
+{
+  "Avengers: Endgame": {
+    "path": "assets/posters/avengers-endgame.jpg",
+    "year": 2019
+  },
+  "Avatar": {
+    "path": "assets/posters/avatar.jpg",
+    "year": 2009
+  },
+  "Interstellar": {
+    "path": "assets/posters/interstellar.jpg",
+    "year": 2014
+  },
+  "Inception": {
+    "path": "assets/posters/inception.jpg",
+    "year": 2010
+  },
+  "Titanic": {
+    "path": "assets/posters/titanic.jpg",
+    "year": 1997
+  },
+  "Top Gun: Maverick": {
+    "path": "assets/posters/top-gun-maverick.jpg",
+    "year": 2022
+  }
+}

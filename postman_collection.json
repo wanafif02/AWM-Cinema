@@ -1,0 +1,2688 @@
+{
+  "info": {
+    "name": "AWM Cinema \u2014 Required APIs + Admin / Customer / Staff / Seats",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/awm-cinema/api/index.php"
+    },
+    {
+      "key": "demo_password",
+      "value": "AWMCinema123!"
+    },
+    {
+      "key": "admin_api_key",
+      "value": "SET_PRIVATELY"
+    },
+    {
+      "key": "customer_token",
+      "value": ""
+    },
+    {
+      "key": "staff_token",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "venue_id",
+      "value": ""
+    },
+    {
+      "key": "event_id",
+      "value": ""
+    },
+    {
+      "key": "booking_id",
+      "value": ""
+    },
+    {
+      "key": "seat_id_1",
+      "value": ""
+    },
+    {
+      "key": "seat_id_2",
+      "value": ""
+    },
+    {
+      "key": "facade_user_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "health"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Health; public; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register customer",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=auth/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "auth/register"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Register customer; public; expected 201",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Postman Customer\",\n  \"email\": \"new@cinema.test\",\n  \"password\": \"NewPassword123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer login",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "auth/login"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Customer login; public; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"afif@awm.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"customer_token\",r.data.access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff login",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "auth/login"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Organiser login; public; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"fairuz@awm.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"staff_token\",r.data.access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin login",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "auth/login"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Admin login; public; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"aiman@awm.test\",\n  \"password\": \"{{demo_password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"admin_token\",r.data.access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Current user",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=auth/me",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "auth/me"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Current user; customer; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List events",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=events&brand=AWM&page=1&limit=12&search=&sort=id&order=asc",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events"
+            },
+            {
+              "key": "brand",
+              "value": "AWM"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "12"
+            },
+            {
+              "key": "search",
+              "value": ""
+            },
+            {
+              "key": "sort",
+              "value": "id"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "List events; public; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get events",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=events/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/1"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Get events; public; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List venues",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=venues&brand=AWM&page=1&limit=12&search=&sort=id&order=asc",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues"
+            },
+            {
+              "key": "brand",
+              "value": "AWM"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "12"
+            },
+            {
+              "key": "search",
+              "value": ""
+            },
+            {
+              "key": "sort",
+              "value": "id"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "List venues; public; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get venues",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=venues/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues/1"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Get venues; public; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List users",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ],
+        "description": "List users; admin; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get user",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=users/5",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users/5"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ],
+        "description": "Get user; admin; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create user",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{admin_api_key}}"
+          }
+        ],
+        "description": "Create user; admin-key; expected 201",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Managed Customer\",\n  \"email\": \"managed@cinema.test\",\n  \"password\": \"ManagedPassword123!\",\n  \"role\": \"customer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"user_id\",r.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update user",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=users/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users/{{user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{admin_api_key}}"
+          }
+        ],
+        "description": "Update user; admin-key; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Customer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT user",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}?route=users/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users/{{user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{admin_api_key}}"
+          }
+        ],
+        "description": "PUT user; admin-key; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Managed Customer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deactivate user",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}?route=users/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users/{{user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{admin_api_key}}"
+          }
+        ],
+        "description": "Deactivate user; admin-key; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create hall",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=venues",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "Create hall; organiser; expected 201",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"AWM Postman Hall\",\n  \"brand\": \"AWM\",\n  \"location\": \"KL demo\",\n  \"capacity\": 50\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"venue_id\",r.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Generate hall seats",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=seats",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "seats"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"venue_id\": \"{{venue_id}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Edit hall",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=venues/{{venue_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues/{{venue_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "Edit hall; organiser; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"AWM Updated Hall\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT hall",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}?route=venues/{{venue_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues/{{venue_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "PUT hall; organiser; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"AWM Postman Hall\",\n  \"brand\": \"AWM\",\n  \"location\": \"KL demo\",\n  \"capacity\": 50\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create screening",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=events",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "Create screening; organiser; expected 201",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman Demo Movie\",\n  \"genre\": \"Adventure\",\n  \"duration_minutes\": 120,\n  \"brand\": \"AWM\",\n  \"venue_id\": \"{{venue_id}}\",\n  \"starts_at\": \"2099-01-01T20:00:00+08:00\",\n  \"ends_at\": \"2099-01-01T22:00:00+08:00\",\n  \"capacity\": 30,\n  \"price_cents\": 2000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"event_id\",r.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Read screening seat map",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=events/{{event_id}}/seats",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/{{event_id}}/seats"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "if(r.success){const a=r.data.seats.filter(s=>s.status===\"available\");pm.collectionVariables.set(\"seat_id_1\",a[0].id);pm.collectionVariables.set(\"seat_id_2\",a[1].id);}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Edit screening",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=events/{{event_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/{{event_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "Edit screening; organiser; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Demo Movie\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT screening",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}?route=events/{{event_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/{{event_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "PUT screening; organiser; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman Demo Movie\",\n  \"genre\": \"Adventure\",\n  \"duration_minutes\": 120,\n  \"brand\": \"AWM\",\n  \"venue_id\": \"{{venue_id}}\",\n  \"starts_at\": \"2099-01-01T20:00:00+08:00\",\n  \"ends_at\": \"2099-01-01T22:00:00+08:00\",\n  \"capacity\": 30,\n  \"price_cents\": 2000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create booking",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=bookings",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Create booking; customer; expected 201",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"{{event_id}}\",\n  \"seat_ids\": [\n    \"{{seat_id_1}}\",\n    \"{{seat_id_2}}\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"booking_id\",r.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List bookings",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=bookings&brand=AWM&order=desc",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings"
+            },
+            {
+              "key": "brand",
+              "value": "AWM"
+            },
+            {
+              "key": "order",
+              "value": "desc"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "List bookings; customer; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get booking",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=bookings/{{booking_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings/{{booking_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Get booking; customer; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ticket QR (internet required)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=bookings/{{booking_id}}/qr",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings/{{booking_id}}/qr"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Ticket QR (internet required); customer; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cancel booking",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=bookings/{{booking_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings/{{booking_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Cancel booking; customer; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"cancelled\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verify cancelled seat available",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=events/{{event_id}}/seats",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/{{event_id}}/seats"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "if(r.success)pm.test(\"Seat released\",()=>pm.expect(r.data.seats.find(s=>String(s.id)===String(pm.collectionVariables.get(\"seat_id_1\"))).status).to.eql(\"available\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT booking cancellation",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}?route=bookings/{{booking_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings/{{booking_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "PUT booking cancellation; customer; expected 200",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"cancelled\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE booking cancellation",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}?route=bookings/{{booking_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings/{{booking_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "DELETE booking cancellation; customer; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mat block released seat",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=seats/{{seat_id_1}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "seats/{{seat_id_1}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"active\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mat reopen released seat",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}?route=seats/{{seat_id_1}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "seats/{{seat_id_1}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"active\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mat DELETE seat availability",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}?route=seats/{{seat_id_1}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "seats/{{seat_id_1}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Remove screening",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}?route=events/{{event_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/{{event_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "Remove screening; organiser; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Remove hall",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}?route=venues/{{venue_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues/{{venue_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ],
+        "description": "Remove hall; organiser; expected 200"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error missing login",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Error missing login; public; expected 401"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 401\",()=>pm.response.to.have.status(401));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});",
+              "if(r.success)pm.collectionVariables.set(\"error_token\",r.data.access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error customer cannot list users",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Error customer cannot list users; customer; expected 403"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 403\",()=>pm.response.to.have.status(403));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error no event",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=events/999999",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "events/999999"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Error no event; public; expected 404"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 404\",()=>pm.response.to.have.status(404));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error invalid quantity",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=bookings",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Error invalid quantity; customer; expected 422",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": 1,\n  \"quantity\": 11\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 422\",()=>pm.response.to.have.status(422));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error booking ownership",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=bookings/2",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings/2"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Error booking ownership; customer; expected 403"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 403\",()=>pm.response.to.have.status(403));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error customer cannot edit hall",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=venues/3",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "venues/3"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "description": "Error cross brand; organiser; expected 403",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Illegal change\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 403\",()=>pm.response.to.have.status(403));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error duplicate email",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=auth/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "auth/register"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "description": "Error duplicate email; public; expected 409",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Duplicate\",\n  \"email\": \"afif@awm.test\",\n  \"password\": \"SomePassword123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 409\",()=>pm.response.to.have.status(409));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error API key absent",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ],
+        "description": "Error API key absent; admin; expected 403",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Blocked user\",\n  \"email\": \"blocked@cinema.test\",\n  \"password\": \"SomePassword123!\",\n  \"role\": \"customer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP 403\",()=>pm.response.to.have.status(403));",
+              "const r=pm.response.json();",
+              "pm.test(\"JSON envelope\",()=>{pm.expect(r).to.have.property(\"success\");pm.expect(r).to.have.property(\"request_id\");});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Read Mat hall layout",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=seats&venue_id=1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "seats"
+            },
+            {
+              "key": "venue_id",
+              "value": "1"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin browser facade list",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer denied seat management",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=seats&venue_id=1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "seats"
+            },
+            {
+              "key": "venue_id",
+              "value": "1"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 403\",()=>pm.response.to.have.status(403));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer denied admin facade",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 403\",()=>pm.response.to.have.status(403));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invalid duplicate seats",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=bookings",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "bookings"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": 1,\n  \"seat_ids\": [\n    1,\n    1\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\",()=>pm.response.to.have.status(422));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin facade create user",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Facade Demo\",\n  \"email\": \"facade-demo@cinema.test\",\n  \"password\": \"FacadePassword123!\",\n  \"role\": \"customer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\",()=>pm.response.to.have.status(201));",
+              "const r=pm.response.json();",
+              "if(r.success)pm.collectionVariables.set(\"facade_user_id\",r.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin facade get user",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users/{{facade_user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users/{{facade_user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin facade edit user",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users/{{facade_user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users/{{facade_user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Facade Demo\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin facade PUT user",
+      "request": {
+        "method": "PUT",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users/{{facade_user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users/{{facade_user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Facade Demo\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin facade deactivate user",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}?route=admin/users/{{facade_user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "admin/users/{{facade_user_id}}"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));",
+              "const r=pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff hall activity",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=operations/halls",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "operations/halls"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staff_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\",()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer denied hall activity",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}?route=operations/halls",
+          "host": [
+            "{{base_url}}"
+          ],
+          "query": [
+            {
+              "key": "route",
+              "value": "operations/halls"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customer_token}}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 403\",()=>pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
